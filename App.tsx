@@ -1,20 +1,49 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { MapPin, Settings } from 'lucide-react-native';
+import { LocationProvider } from './src/contexts/LocationContext';
+import { PreferencesProvider } from './src/contexts/PreferencesContext';
+import NearbyPlaces from './src/screens/NearbyPlaces';
+import PreferencesScreen from './src/screens/PreferencesScreen';
+
+const Tab = createBottomTabNavigator();
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <SafeAreaProvider>
+      <PreferencesProvider>
+        <LocationProvider>
+          <NavigationContainer>
+            <Tab.Navigator
+              screenOptions={{
+                tabBarActiveTintColor: '#007AFF',
+                tabBarInactiveTintColor: 'gray',
+              }}
+            >
+              <Tab.Screen 
+                name="Nearby" 
+                component={NearbyPlaces}
+                options={{
+                  tabBarIcon: ({ color, size }) => (
+                    <MapPin color={color} size={size} />
+                  ),
+                }}
+              />
+              <Tab.Screen 
+                name="Preferences" 
+                component={PreferencesScreen}
+                options={{
+                  tabBarIcon: ({ color, size }) => (
+                    <Settings color={color} size={size} />
+                  ),
+                }}
+              />
+            </Tab.Navigator>
+          </NavigationContainer>
+        </LocationProvider>
+      </PreferencesProvider>
+    </SafeAreaProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
